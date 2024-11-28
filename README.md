@@ -33,3 +33,5 @@ Generate Token
 ```
 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
 ```
+
+Ctrl+Shift+V.
