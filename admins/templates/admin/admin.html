@@ -1,0 +1,29 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/css/report.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="date-range">
+        <form id="date-form" method="get" action="{% url 'admin:fetch_reports' %}">
+            {% csrf_token %}
+            {{ form.start_date.label_tag }} {{ form.start_date }}
+            {{ form.end_date.label_tag }} {{ form.end_date }}
+            <div class="checklist-container" id="checklist-container">
+                {% for section in form.sections %}
+                    <label class="custom-checkbox">
+                        {{ section.tag }}<span></span>{{ section }}
+                    </label>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    <div class="report-container" id="report-container">
+        <!-- Report will be dynamically loaded here -->
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'admin/js/report.js' %}"></script>
+{% endblock  %}

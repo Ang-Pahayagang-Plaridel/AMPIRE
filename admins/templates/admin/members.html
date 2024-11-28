@@ -1,0 +1,61 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}Mga Tao{% endblock %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/css/members.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-success me-2" data-toggle="modal" data-target="#updateModal">
+            Update Members
+        </button>
+    </div>
+    <div class="members-filter">
+        <form id="members-filter-form" method="get" action="{% url 'admin:get_members' %}">
+            {% csrf_token %}
+            <div class="checklist-container" id="checklist-container">
+                {% for section in member_filter_form.sections %}
+                    <label class="custom-checkbox">
+                        {{ section.tag }}<span></span>{{ section }}
+                    </label>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    <div id="members-table" class="table-container"></div>
+
+    <!-- Update Members Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Members</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'admin:add_members' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ add_member_form.as_p }}
+                        <!-- <p>
+                            <label for="gsheet_link">GSheet Directory Link:</label>
+                            <input type="text" name="gsheet_link" class="form-control" id="gsheet_link" required />
+                        </p>
+                        <p>
+                            <label for="update_sirk_tracker">Update Sirk Tacker:</label>
+                            <input type="checkbox" name="update_sirk_tracker" class="form-check-input" id="update_sirk_tracker" checked />
+                        </p> -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="edit-form-container" class="table-container"></div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'admin/js/members.js' %}"></script>
+{% endblock  %}

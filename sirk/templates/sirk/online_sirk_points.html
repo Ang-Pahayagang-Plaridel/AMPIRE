@@ -1,0 +1,77 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}Online Sirk Points{% endblock %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-success me-2" data-toggle="modal" data-target="#createModal">
+            Create New Online Sirk Points
+        </button>
+    </div>
+    <div class="ampire-table">
+        <h2>Online Sirk Points</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Rules</th>
+                    <th scope="col">Points per Image</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for online_point, edit_form in zipped_points_forms %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ online_point.rule }}</td>
+                    
+                    <!-- The form for saving the points per image -->
+                    <form action="{% url 'sirk:edit_online_sirk_points' online_point.pk %}" method="post" style="display: flex;">
+                        {% csrf_token %}
+                        <td>{{ edit_form.value }}</td>
+                        <td>
+                            <!-- Save Button -->
+                            <button type="submit" class="btn btn-primary me-2">
+                                Save
+                            </button>
+                    </form>
+
+                    <!-- The form for deleting the entry -->
+                    <form action="{% url 'sirk:delete_online_sirk_points' online_point.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Create New Online Sirk Points</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'sirk:create_online_sirk_points' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+{% endblock %}

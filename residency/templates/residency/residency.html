@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Tap Tap & Go</title>
+    {% load static %}
+    {% load custom_filters %}
+    <link rel="icon" href="{% static 'admin/img/icon.png' %}" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        a:hover {
+            cursor: default;
+        }
+
+        /* New CSS for the clock-in/clock-out system */
+        .header {
+            background-color: #4CAF50; /* Primary green background color */
+            padding: 20px;
+            border-bottom-left-radius: 20px; /* Rounded lower left edge */
+            border-bottom-right-radius: 20px; /* Rounded lower right edge */
+            position: relative;
+        }
+
+        .header img {
+            max-width: 200px; /* Adjust the size of the rectangular image */
+            display: block;
+            margin: 0 auto;
+        }
+
+        .logo img {
+            max-width: 150px; /* Adjust the size of the circular green logo */
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: white; /* White background for the content container */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            /* width: 80%; */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .employee-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .employee-card {
+            border: 1px solid #065e00; /* Green border for employee cards */
+            border-radius: 10px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            width: 190px; /* Adjust the width of the employee cards as needed */
+        }
+
+        #input {
+            width: 80%; /* Make the input almost as long as its container */
+            border: 2px solid #4CAF50; /* Green border for the input */
+            border-radius: 10px; /* Rounded edges for the input */
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img src="{% static 'admin/img/icon.png' %}" alt="APP Logo" /></div>
+        <a href="{% url 'login' %}"><img src="{% static 'residency/img/heading.png' %}" alt="Tap Tap & Go" /></a>
+        
+    </div>
+
+    <div class="container">
+        <h1><span id="timePlaceholder"></span></h1>
+        <div>
+            <!-- Employee ID input will be automatically submitted when changed -->
+            <form action="{% url 'residency:run' %}" method="post" id="myForm" name="myForm">
+                {% csrf_token %}
+                <input type="number" id="input" name="input" onchange="handleInput()" />
+            </form>
+        </div>
+    </div>
+
+    <!-- Employee List -->
+    <div class="container">
+        <h2>Mga Tao</h2>
+        <div class="employee-list">
+            <!-- Sample Employee Card (You can loop through your employee data to create cards) -->
+            {% for record in daily_records %}
+                <div class="employee-card">
+                    <h3>{{ record.member.get_name }}</h3>
+                    <td>ID: {{ record.member.id_num|mask_id }}</td>
+                    <p>{{ record.member.get_position }}</p>
+                    <p>Clocked In: {{ record.clock_in }}</p>
+                    {% if record.clock_out %}
+                    <p>Clocked Out: {{ record.clock_out }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <!-- Add more employee cards as needed -->
+        </div>
+    </div>
+    <script src="{% static 'residency/js/residency.js' %}"></script>
+</body>
+</html>

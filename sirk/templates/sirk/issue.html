@@ -1,0 +1,93 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}Mga Isyu{% endblock %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-success me-2" data-toggle="modal" data-target="#createModal">
+            Create New Isyu
+        </button>
+        {% if last_issue_name %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal">
+            Edit {{ last_issue_name }} Isyu
+        </button>
+        {% endif %}
+    </div>
+
+    {% if issues %}
+    <div class="ampire-table table-responsive">
+        <h2>Mga Isyu</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Issue</th>
+                    <th scope="col">Online Start Date</th>
+                    <th scope="col">Online Double Pts End Date</th>
+                    <th scope="col">Online End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ issue.name }}</td>
+                    <td>{{ issue.online_start_date }}</td>
+                    <td>{{ issue.online_double_pts_end_date }}</td>
+                    <td>{{ issue.online_end_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if last_issue_name %}
+    <!-- Edit Issue Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit {{ last_issue_name }} Isyu</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'sirk:edit_issue' %}" method="post">
+                        {% csrf_token %}
+                        {{ edit_form.as_p }}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Create Issue Modal -->
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Create New Isyu</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'sirk:create_issue' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Create Issue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+{% endblock %}

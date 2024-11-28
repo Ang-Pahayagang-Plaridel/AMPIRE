@@ -1,0 +1,36 @@
+.sidebar {
+    position: fixed;
+    height: 100vh;
+    width: 280px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    z-index: 1000;
+}
+
+.logo img {
+    max-width: 250px; /* Adjust the size of the circular green logo */
+    /* border-radius: 50%; */
+    display: block;
+    margin: 0 auto;
+}
+
+.nav-pills .nav-link {
+    color: black;
+}
+
+.nav-pills .nav-link {
+    margin-bottom: 3px;
+}
+
+.nav-pills .active {
+    background-color: #065e00 !important;
+}
+
+.nav-pills .inactive:hover {
+    color: white;
+    background-color: #4CAF50 !important;
+}
+
+.container {
+    margin-left: 280px;
+}

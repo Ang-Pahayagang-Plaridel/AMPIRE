@@ -1,0 +1,50 @@
+/* Checklist Container */
+.checklist-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Custom Checkbox Style */
+.custom-checkbox {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none; /* Hide the default checkbox */
+}
+
+/* Custom Box (shown after hiding default checkbox) */
+.custom-checkbox span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #f7f7f7;
+    border: 2px solid #4CAF50;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: sub;
+}
+
+/* Checkmark Style */
+.custom-checkbox input[type="checkbox"]:checked + span {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+/* Checkmark Icon */
+.custom-checkbox input[type="checkbox"]:checked + span:after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    margin: 2px 0 0 6px;
+}

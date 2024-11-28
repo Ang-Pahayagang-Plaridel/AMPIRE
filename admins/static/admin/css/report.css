@@ -1,0 +1,117 @@
+.header-img {
+    width: 50%;
+}
+
+.date-range {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.date-range label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.date-range input[type="date"] {
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.report-container {
+    display: flex;
+    flex: 2;
+    max-width: 90%;
+}
+
+.primary-report {
+    flex: 2; /* Adjust the width of the primary report */
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.ampire-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ampire-table table, .ampire-table th, .ampire-table td {
+    border: 1px solid #ccc;
+}
+
+.ampire-table th, .ampire-table td {
+    vertical-align: middle;
+    padding: 10px;
+}
+
+.side-col {
+    margin-left: 30px;
+}
+
+.section-report {
+    flex: 1; /* Adjust the width of the section report */
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.chart-container {
+    width: 100%; /* Ensure the chart spans the entire container */
+}
+
+/* Checklist Container */
+.checklist-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Custom Checkbox Style */
+.custom-checkbox {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none; /* Hide the default checkbox */
+}
+
+/* Custom Box (shown after hiding default checkbox) */
+.custom-checkbox span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #f7f7f7;
+    border: 2px solid #4CAF50;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: sub;
+}
+
+/* Checkmark Style */
+.custom-checkbox input[type="checkbox"]:checked + span {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+/* Checkmark Icon */
+.custom-checkbox input[type="checkbox"]:checked + span:after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    margin: 2px 0 0 6px;
+}
