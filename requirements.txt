@@ -1,0 +1,17 @@
+Django>=3.0,<4.0
+mysqlclient
+python-decouple
+channels
+celery
+redis
+# google-api-python-client
+# google-auth-httplib2
+# google-auth-oauthlib
+# google-auth
+# gspread
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+
+django-celery-beat

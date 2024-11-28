@@ -1,0 +1,100 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      timeout: 20s
+      retries: 10
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: AMPIRE
+    command: sh -c "python3 manage.py migrate --noinput && python3 manage.py runserver 0.0.0.0:8000"
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      celery:
+        condition: service_healthy
+
+  redis:
+    image: redis:6.0
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery
+    command: >
+      bash -c "celery -A AMPIRE worker --loglevel=info --concurrency=1 &&
+               celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A AMPIRE status"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # celery-beat:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: celery-beat
+  #   command: celery -A app beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+  #   restart: always
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "celery -A app beat --detach"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+volumes:
+  mysql_data:
