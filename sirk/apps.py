@@ -54,14 +54,14 @@ class SirkConfig(AppConfig):
 
         def create_periodic_tasks(sender, **kwargs):
             # Define the schedule (e.g., every hour)
-            # schedule, created = IntervalSchedule.objects.get_or_create(
-            #     every=30,
-            #     period=IntervalSchedule.MINUTES,
-            # )
-            schedule, created = CrontabSchedule.objects.get_or_create(
-                minute='0,30',  # Run at minute 0 and 30 of each hour
-                hour='*',       # Every hour
+            schedule, created = IntervalSchedule.objects.get_or_create(
+                every=1,
+                period=IntervalSchedule.HOURS,
             )
+            # schedule, created = CrontabSchedule.objects.get_or_create(
+            #     minute='0,30',  # Run at minute 0 and 30 of each hour
+            #     hour='*',       # Every hour
+            # )
 
             # Define the periodic task
             task, created = PeriodicTask.objects.get_or_create(
