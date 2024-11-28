@@ -94,6 +94,12 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "celery", "-A", "AMPIRE", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   celery_beat:
     build:
@@ -111,6 +117,12 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "celery", "-A", "AMPIRE", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
 volumes:
   mysql_data:
