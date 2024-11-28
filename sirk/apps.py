@@ -49,3 +49,24 @@ class SirkConfig(AppConfig):
                     value=5,
                 )
         post_migrate.connect(create_initial_online_sirk_pts)
+
+        from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule
+
+        def create_periodic_tasks(sender, **kwargs):
+            # Define the schedule (e.g., every hour)
+            # schedule, created = IntervalSchedule.objects.get_or_create(
+            #     every=30,
+            #     period=IntervalSchedule.MINUTES,
+            # )
+            schedule, created = CrontabSchedule.objects.get_or_create(
+                minute='0,30',  # Run at minute 0 and 30 of each hour
+                hour='*',       # Every hour
+            )
+
+            # Define the periodic task
+            task, created = PeriodicTask.objects.get_or_create(
+                interval=schedule,
+                name='Compute Sirk',
+                task='sirk.task.compute_sirk',
+            )
+        post_migrate.connect(create_periodic_tasks, sender=self)
