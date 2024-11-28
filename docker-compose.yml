@@ -112,6 +112,5 @@ celery_beat:
   env_file:
     - .env
 
-
 volumes:
   mysql_data:
