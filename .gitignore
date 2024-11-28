@@ -1,13 +1,2 @@
-# Ignore Python virtual environment
 .venv/
 init.csv
-
-# Common Python ignores
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-
-# IDE ignores
-.vscode/
-.idea/
