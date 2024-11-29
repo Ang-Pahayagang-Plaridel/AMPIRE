@@ -130,5 +130,5 @@ def create_issue(request):
 from sirk.task import compute_sirk as compute_sirk_task
 
 def compute_sirk(request):
-    compute_sirk_task.delay()
+    compute_sirk_task()
     return redirect('/sirk')

@@ -54,9 +54,6 @@ def get_sirk_data():
             )
         )
         # .annotate(full_name=Concat(Upper('last_name'), Value(', '), 'first_name'))
-    print("members====================")
-    for member in members:
-        print(member.full_name)
     section_folders = get_folders(issue.folder_id)
     # print("section_folders====================")
     # print(section_folders)
@@ -83,7 +80,13 @@ def get_sirk_data():
                                     'points': sirk_pts,
                                     'section': member.section.name,
                                 }
+
+                            # print("===================")
+                            # print(f"rule = {rule}")
+                            # print(f"online_sirk_rule.value += {online_sirk_rule.value}") 
+                            # print(f"sirk_pts += {sirk_pts}")
                             # print(sirk[member.get_name()])
+                            # print(f"uploaded time = {parser.parse(image_file.get('createdTime'))}")
 
     return sirk
 

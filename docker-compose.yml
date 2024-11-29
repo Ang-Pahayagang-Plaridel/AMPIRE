@@ -37,10 +37,6 @@ services:
         condition: service_healthy
       # celery:
       #   condition: service_healthy
-      celery_worker:
-        condition: service_healthy
-      celery_beat:
-        condition: service_healthy
 
   redis:
     image: redis:6.0
@@ -54,14 +50,36 @@ services:
       timeout: 5s
       retries: 5
 
-  # celery:
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery
+    command: >
+      bash -c "celery -A AMPIRE worker --loglevel=info --concurrency=1 &&
+               celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A AMPIRE status"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # celery_worker:
   #   build:
   #     context: .
   #     dockerfile: Dockerfile
-  #   container_name: celery
-  #   command: >
-  #     bash -c "celery -A AMPIRE worker --loglevel=info --concurrency=1 &&
-  #              celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+  #   container_name: celery_worker
+  #   command: celery -A AMPIRE worker --loglevel=info --concurrency=1
   #   restart: always
   #   volumes:
   #     - .:/app
@@ -73,56 +91,34 @@ services:
   #   env_file:
   #     - .env
   #   healthcheck:
-  #     test: ["CMD-SHELL", "celery -A AMPIRE status"]
-  #     interval: 15s
-  #     timeout: 5s
+  #     test: ["CMD", "celery", "-A", "AMPIRE", "status"]
+  #     interval: 30s
+  #     timeout: 10s
   #     retries: 5
+  #     start_period: 10s
 
-  celery_worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: celery_worker
-    command: celery -A AMPIRE worker --loglevel=info --concurrency=1
-    restart: always
-    volumes:
-      - .:/app
-    depends_on:
-      redis:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-    env_file:
-      - .env
-    healthcheck:
-      test: ["CMD", "celery", "-A", "AMPIRE", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-
-  celery_beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: celery_beat
-    command: celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    restart: always
-    volumes:
-      - .:/app
-    depends_on:
-      redis:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-    env_file:
-      - .env
-    healthcheck:
-      test: ["CMD", "celery", "-A", "AMPIRE", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
+  # celery_beat:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: celery_beat
+  #   command: celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+  #   restart: always
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   healthcheck:
+  #     test: ["CMD", "celery", "-A", "AMPIRE", "status"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 10s
 
 volumes:
   mysql_data:
