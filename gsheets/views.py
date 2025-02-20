@@ -114,14 +114,16 @@ def reformat_colors(fill_colors):
 
 def get_members_data(spreadsheet_id):
     sheet_names = sheets.get_sheet_names(spreadsheet_id)
+    print(sheet_names)
     header_values = [
-        'ID Number',
-        'Pangalan (Surname, Name, Middle Initial)',
-        'Position',
-        'Origin',
+        'ID NUMBER',
+        'PANGALAN (SURNAME, NAME, MIDDLE INITIAL)',
+        'POSITION',
+        'ORIGIN',
     ]
+
     cell_headers = sheets.find_cells(spreadsheet_id, sheet_names, header_values)
-    # print(cell_headers)
+    print(cell_headers)
     read_range = []
     for sheet, cell_header in cell_headers.items():
         for cell_header in cell_header.values():

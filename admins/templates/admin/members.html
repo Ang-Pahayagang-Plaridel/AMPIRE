@@ -33,17 +33,17 @@
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'admin:add_members' %}" method="post" enctype="multipart/form-data">
+                    <form action="{% url 'admin:update_members' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ add_member_form.as_p }}
-                        <!-- <p>
+                        <!-- {{ add_member_form.as_p }} -->
+                        <p>
                             <label for="gsheet_link">GSheet Directory Link:</label>
                             <input type="text" name="gsheet_link" class="form-control" id="gsheet_link" required />
                         </p>
                         <p>
                             <label for="update_sirk_tracker">Update Sirk Tacker:</label>
-                            <input type="checkbox" name="update_sirk_tracker" class="form-check-input" id="update_sirk_tracker" checked />
-                        </p> -->
+                            <input type="checkbox" name="update_sirk_tracker" class="form-check-input" id="update_sirk_tracker" />
+                        </p>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success">Submit</button>

@@ -54,6 +54,7 @@ def initialize_sirk_tracker():
 
 def update_sirk_tracker_members():
     spreadsheet_id = get_sirk_tracker()
+    # spreadsheet_id = "1htEdCKL0caPrxTCM1hi0lWebBW8Vub8tu4MiR7LEVG0"
     tracker_sections = get_sheet_names(spreadsheet_id)
     sections = Section.objects.filter(is_active=True)
     sections_list = [section.upper() for section in sections.values_list('name', flat=True)]
@@ -104,7 +105,10 @@ def create_APP_folder(app_info_id, gmail):
 
 @shared_task
 def update_db(spread_sheet_id, is_update_sirk_tracker):
+    update_sirk_tracker_members()
+    return
     [ data, section_colors ] = get_members_data(spread_sheet_id)
+    # print(data)
     # Initialize counters and dictionaries
     section_abbreviations = {}
     section_counters = {}
@@ -131,6 +135,9 @@ def update_db(spread_sheet_id, is_update_sirk_tracker):
                 # 'secondary_color': secondary_color,
             }
         )
+
+        # print("===============")
+        # print(section)
 
         if not created:
             # section.primary_color = primary_color

@@ -188,22 +188,15 @@ def get_members(request):
         })
     return JsonResponse({ 'members' : member_list })
 
-# def update_members(request):
-
-#     if request.method == 'POST':
-#         gsheet_link = request.POST.get('gsheet_link')
-#         is_update_sirk_tracker = request.POST.get('update_sirk_tracker')
-
-#         # TODO: Input Validation
-#         spread_sheet_id = extract_sheet_id(gsheet_link)
-#         update_db.delay(spread_sheet_id, is_update_sirk_tracker)
-
-#     return redirect('/admin')
-
 def update_members(request):
 
     if request.method == 'POST':
+        gsheet_link = request.POST.get('gsheet_link')
+        is_update_sirk_tracker = request.POST.get('update_sirk_tracker')
 
+        # TODO: Input Validation
+        spread_sheet_id = extract_sheet_id(gsheet_link)
+        update_db(spread_sheet_id, is_update_sirk_tracker)
 
+    return redirect('admin:members')
 
-        return redirect('/admin')

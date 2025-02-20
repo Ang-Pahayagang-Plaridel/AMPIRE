@@ -24,6 +24,7 @@ def find_cells(spreadsheet_id, sheet_names, search_values, batch_size=100, max_r
     valid_sheets = {}
 
     for sheet_name in sheet_names:
+        print(sheet_name)
         search_results = {value: None for value in search_values}
         max_row_number = 0  # Track the highest row number found
 
@@ -45,6 +46,7 @@ def find_cells(spreadsheet_id, sheet_names, search_values, batch_size=100, max_r
 
                     for row_idx, row in enumerate(values):
                         for col_idx, cell_value in enumerate(row):
+                            cell_value = cell_value.upper()
                             if cell_value in search_values:
                                 col_letter = chr(ord('A') + col_idx)
                                 row_number = start_row + row_idx
@@ -54,9 +56,9 @@ def find_cells(spreadsheet_id, sheet_names, search_values, batch_size=100, max_r
                                 if search_results[cell_value] is None or row_number > max_row_number:
                                     max_row_number = row_number
                                     search_results[cell_value] = cell_reference
-
+                print(search_results)
                 # Adjust all found cell references to the highest row number found
-                if all(search_results[value] is not None for value in search_values):
+                if all(search_results[value] not in (None, '') for value in search_values):
                     for value in search_results:
                         col_letter = search_results[value].split('!')[1][0]  # Extract column letter
                         search_results[value] = f"{sheet_name}!{col_letter}{max_row_number}"
@@ -945,6 +947,9 @@ def update_sirk_tracker_with_new_members(spreadsheet_id, new_members_dict, max_r
     service = get_sheets_service()
     batch_update_requests = []
 
+    print("=============================")
+    print(new_members_dict)
+
     for section_name, new_members in new_members_dict.items():
         retries = 0
         while retries < max_retries:
@@ -976,12 +981,16 @@ def update_sirk_tracker_with_new_members(spreadsheet_id, new_members_dict, max_r
 
                 # Add each new member in alphabetical order
                 for member_name in new_members:
+                    if member_name in existing_members:  # Prevent duplicate insertion
+                        print(f"{member_name} is already in the list, skipping...")
+                        continue  # Skip inserting if already present
+                    
                     insert_position = next(
                         (index for index, name in enumerate(existing_members) if member_name < name),
                         len(existing_members)
                     )
                     existing_members.insert(insert_position, member_name)
-                    
+
                     # Insert new row at the calculated position
                     row_index = insert_position + 2 + inserted_rows  # Adding 2 to start at B3, add inserted_rows to keep track
                     
