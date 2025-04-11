@@ -5,7 +5,7 @@ import time
 
 from . import drive
 
-from AMPIRE.utils import handle_error, batch_callback, logger
+from AMPIRE.utils.utils import handle_error, batch_callback, logger
 # Create your views here.
 
 # def compute_sirk_process(issue_folder_id, ):

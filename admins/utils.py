@@ -1,7 +1,7 @@
 import colorsys
 import datetime
 
-from AMPIRE.utils import logger
+from AMPIRE.utils.utils import logger
 
 def get_default_dates():
     today = datetime.date.today()

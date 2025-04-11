@@ -48,25 +48,41 @@ class SirkConfig(AppConfig):
                     rule='Telegram',
                     value=5,
                 )
-        post_migrate.connect(create_initial_online_sirk_pts)
+        # post_migrate.connect(create_initial_online_sirk_pts)
 
         from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule
 
         def create_periodic_tasks(sender, **kwargs):
-            # Define the schedule (e.g., every hour)
-            schedule, created = IntervalSchedule.objects.get_or_create(
-                every=1,
-                period=IntervalSchedule.HOURS,
-            )
-            # schedule, created = CrontabSchedule.objects.get_or_create(
-            #     minute='0,30',  # Run at minute 0 and 30 of each hour
-            #     hour='*',       # Every hour
+            # # Define the schedule (e.g., every hour)
+            # schedule, created = IntervalSchedule.objects.get_or_create(
+            #     every=1,
+            #     period=IntervalSchedule.HOURS,
             # )
+            # # schedule, created = CrontabSchedule.objects.get_or_create(
+            # #     minute='0,30',  # Run at minute 0 and 30 of each hour
+            # #     hour='*',       # Every hour
+            # # )
 
-            # Define the periodic task
-            task, created = PeriodicTask.objects.get_or_create(
-                interval=schedule,
-                name='Compute Sirk',
-                task='sirk.task.compute_sirk',
+            # # Define the periodic task
+            # task, created = PeriodicTask.objects.get_or_create(
+            #     interval=schedule,
+            #     name='Compute Sirk',
+            #     task='sirk.task.compute_sirk',
+            # )
+            
+            # Create a schedule to run every hour
+            schedule, _ = CrontabSchedule.objects.get_or_create(
+                minute='*',
+                hour='*',
+                day_of_week='*',
+                day_of_month='*',
+                month_of_year='*',
             )
-        post_migrate.connect(create_periodic_tasks, sender=self)
+
+            # Create the periodic task
+            PeriodicTask.objects.create(
+                crontab=schedule,
+                name='My Hourly Task',
+                task='residency.tasks.update_residency_tracker',
+            )
+        # post_migrate.connect(create_periodic_tasks, sender=self)

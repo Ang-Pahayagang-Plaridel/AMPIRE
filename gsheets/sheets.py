@@ -4,7 +4,7 @@ from googleapiclient.errors import HttpError
 from django.conf import settings
 import time
 
-from AMPIRE.utils import logger
+from AMPIRE.utils.utils import logger
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 

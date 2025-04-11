@@ -10,7 +10,7 @@ import datetime, time, re
 
 from gdrive.drive import get_drive_service, get_folder_id, get_folders, create_folder, get_image_files, find_gsheet_in_folder
 from gsheets.sheets import get_text_in_row_2_from_column_c, add_text_to_first_blank_or_new_column, write_sirk_points_to_sheets, get_last_column_with_text, update_leaderboard
-from AMPIRE.utils import handle_error, batch_callback, logger, hex_to_rgb
+from AMPIRE.utils.utils import handle_error, batch_callback, logger, hex_to_rgb
 
 from .models import Issue, OnlinePoints
 from admins.models import APPInfo, Member, Section

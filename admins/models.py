@@ -1,7 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 # Create your models here.
+
+class EnvironmentVariable(models.Model):
+    key = models.CharField(max_length=100, unique=True)
+    value = models.TextField()
+
+class Template(models.Model):
+    name = models.CharField(max_length=100)
+    template_id = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
 
 class APPInfo(models.Model):
     year = models.IntegerField(unique=True)
@@ -52,6 +60,5 @@ class Member(models.Model):
         self.first_name = self.first_name.title()
         if self.middle_initial:
             self.middle_initial = ' '.join(self.middle_initial).upper()
-
         
         super(Member, self).save(*args, **kwargs)

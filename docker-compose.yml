@@ -1,23 +1,4 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    restart: always
-    ports:
-      - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./test.sql:/docker-entrypoint-initdb.d/test.sql
-    healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
-      timeout: 20s
-      retries: 10
-
   django:
     build:
       context: .
@@ -32,12 +13,22 @@ services:
     env_file:
       - .env
     depends_on:
-      mysql:
-        condition: service_healthy
       redis:
         condition: service_healthy
-      # celery:
-      #   condition: service_healthy
+      celery_worker:
+        condition: service_healthy
+      celery_beat:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis:6.0
@@ -50,76 +41,60 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  celery:
+  celery_worker:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: celery
-    command: >
-      bash -c "celery -A AMPIRE worker --loglevel=info --concurrency=1 &&
-               celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    container_name: celery_worker
+    command: celery -A AMPIRE worker --loglevel=info --concurrency=1
     restart: always
     volumes:
       - .:/app
     depends_on:
       redis:
         condition: service_healthy
-      mysql:
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A AMPIRE inspect ping || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_beat
+    command: celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      celery_worker:
         condition: service_healthy
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "celery -A AMPIRE status"]
-      interval: 15s
-      timeout: 5s
+      test: ["CMD-SHELL", "celery -A AMPIRE beat --help >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 20s
       retries: 5
-
-  # celery_worker:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: celery_worker
-  #   command: celery -A AMPIRE worker --loglevel=info --concurrency=1
-  #   restart: always
-  #   volumes:
-  #     - .:/app
-  #   depends_on:
-  #     redis:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #   env_file:
-  #     - .env
-  #   healthcheck:
-  #     test: ["CMD", "celery", "-A", "AMPIRE", "status"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 10s
-
-  # celery_beat:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: celery_beat
-  #   command: celery -A AMPIRE beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-  #   restart: always
-  #   volumes:
-  #     - .:/app
-  #   depends_on:
-  #     redis:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #   env_file:
-  #     - .env
-  #   healthcheck:
-  #     test: ["CMD", "celery", "-A", "AMPIRE", "status"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 10s
-
-volumes:
-  mysql_data:
+      start_period: 60s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"

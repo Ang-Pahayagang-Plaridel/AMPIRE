@@ -15,7 +15,7 @@ from gsheets.sheets import copy_sheets, add_rows_and_fill_color, get_sheet_names
 from gdrive.drive import add_manager_and_set_permissions, find_gsheet_in_folder
 from django.db.models import Q
 from decouple import config
-from AMPIRE.utils import hex_to_rgb, logger
+from AMPIRE.utils.utils import hex_to_rgb, logger
 from .utils import lighten_color, process_full_name
 
 def initialize_sirk_tracker():

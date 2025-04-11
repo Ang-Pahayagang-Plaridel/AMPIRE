@@ -5,7 +5,7 @@ from django.conf import settings
 from decouple import config
 import time
 
-from AMPIRE.utils import logger
+from AMPIRE.utils.utils import logger
 import logging
 
 SCOPES = ['https://www.googleapis.com/auth/drive']

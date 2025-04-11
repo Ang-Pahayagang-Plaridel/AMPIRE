@@ -4,6 +4,10 @@ from django.utils import timezone
 
 from admins.models import Member
 from . models import Residency
+from AMPIRE.utils.gsheets import batch_update_values
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -45,3 +49,19 @@ def run(request):
 
     return redirect('/')
     
+def test(request):
+    # Prepare test data
+    spreadsheet_id = "1b-udVm_KcQoJzr8ZfZIwHrO6qnA473iF1Oudl42hCgE"  # Replace with your actual spreadsheet ID
+    updates = []
+    
+    # Create a larger set of updates
+    for i in range(1, 1001):  # 20 updates for testing
+        updates.append((f"Sheet1!A{i}:Z{i}", [[f"Test Value {i}A", f"Test Value {i}B", f"Test Value {i}C", f"Test Value {i}D", f"Test Value {i}E", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}B", f"Test Value {i}Z"]]))
+
+    try:
+        # Call the batch_update_values function
+        batch_update_values(spreadsheet_id, updates)
+        logger.info("Batch update values executed successfully.")
+    except Exception as e:
+        logger.error(f"An error occurred during batch update: {e}")
+

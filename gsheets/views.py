@@ -3,7 +3,7 @@ import re
 
 from . import sheets
 
-from AMPIRE.utils import rgb_to_hex
+from AMPIRE.utils.utils import rgb_to_hex
 
 # Create your views here.
 
@@ -87,7 +87,7 @@ def get_first_stated_range(range_list):
 
     return first_ranges
 
-from AMPIRE.utils import logger
+from AMPIRE.utils.utils import logger
 
 def reformat_colors(fill_colors):
     logger.info(fill_colors)

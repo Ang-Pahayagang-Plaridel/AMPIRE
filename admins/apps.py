@@ -73,6 +73,6 @@ class AdminsConfig(AppConfig):
                     full_name='Impormasyong Panteknolohiya',
                     section_color='#ff9900',
                 )
-        post_migrate.connect(create_initial_users)
-        post_migrate.connect(create_initial_sections)
+        # post_migrate.connect(create_initial_users)
+        # post_migrate.connect(create_initial_sections)
         
